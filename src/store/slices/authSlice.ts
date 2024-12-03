@@ -1,13 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, Action } from '@reduxjs/toolkit'
+import { REHYDRATE } from 'redux-persist'
 
 interface User {
-  _id: string
-  name: string
-  email: string
   username: string
-  role: 'admin' | 'user'
+  name: string
+  role: string
 }
-
 
 export interface AuthState {
   user: User | null
@@ -16,6 +14,12 @@ export interface AuthState {
   error: string | null
 }
 
+interface RehydrateAction extends Action {
+  type: typeof REHYDRATE
+  payload?: {
+    auth: AuthState
+  }
+}
 
 const initialState: AuthState = {
   user: null,
@@ -29,16 +33,24 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginStart: (state) => {
+      console.log('Login started')
       state.loading = true
       state.error = null
     },
-    loginSuccess: (state, action: PayloadAction<Partial<User>>) => {
+    loginSuccess: (state, action: PayloadAction<User>) => {
+      console.log('Login successful:', action.payload)
       state.loading = false
       state.isAuthenticated = true
-      state.user = action.payload as User
+      state.user = action.payload
       state.error = null
-    },
+      console.log('Current auth state:', state)
+      console.log('LocalStorage after login:', localStorage.getItem('persist:root'))
+    }
+    
+    
+    ,
     loginFail: (state, action: PayloadAction<string>) => {
+      console.log('Login failed:', action.payload)
       state.loading = false
       state.error = action.payload
     },
@@ -47,8 +59,20 @@ const authSlice = createSlice({
       state.isAuthenticated = false
       state.error = null
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(REHYDRATE, (state, action: RehydrateAction) => {
+      if (action.payload?.auth) {
+        return {
+          ...state,
+          ...action.payload.auth
+        }
+      }
+      return state
+    })
   }
 })
 
 export const { loginStart, loginSuccess, loginFail, logout } = authSlice.actions
 export default authSlice.reducer
+
