@@ -1,4 +1,7 @@
 export function CVList() {
-    return <div>CV Overview Page</div>
-  }
-  
+  return (
+    <div>
+      <h1>CV List</h1>
+    </div>
+  )
+}

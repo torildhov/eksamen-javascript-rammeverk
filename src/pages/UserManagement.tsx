@@ -188,7 +188,7 @@ export function UserManagement() {
                   type="text"
                   value={editFormData.name}
                   onChange={e => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
-                  className="mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:border-blue-500"
+                  className="mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:border-blue-500 bg-white text-gray-900"
                   required
                 />
               </div>
@@ -199,7 +199,7 @@ export function UserManagement() {
                   type="email"
                   value={editFormData.email}
                   onChange={e => setEditFormData(prev => ({ ...prev, email: e.target.value }))}
-                  className="mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:border-blue-500"
+                  className="mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:border-blue-500 bg-white text-gray-900"
                   required
                 />
               </div>
@@ -209,7 +209,7 @@ export function UserManagement() {
                 <select
                   value={editFormData.role}
                   onChange={e => setEditFormData(prev => ({ ...prev, role: e.target.value as 'admin' | 'user' }))}
-                  className="mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:border-blue-500"
+                  className="mt-1 block w-full rounded-md border px-3 py-2 focus:outline-none focus:border-blue-500 bg-white text-gray-900"
                 >
                   <option value="user">User</option>
                   <option value="admin">Admin</option>
