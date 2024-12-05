@@ -9,6 +9,18 @@ export function UserManagement() {
   const users = useSelector((state: RootState) => state.users.users)
   
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsEditModalOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [])
+  
+
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [editFormData, setEditFormData] = useState({
     name: '',
@@ -176,9 +188,15 @@ export function UserManagement() {
           </div>
         </div>
       </div>
-
-      {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          {isEditModalOpen && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+              onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                  setIsEditModalOpen(false)
+                }
+              }}
+            >
           <div className="bg-white p-8 rounded-lg w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6">Edit User</h2>
             <form onSubmit={handleUpdate} className="space-y-4">
