@@ -11,6 +11,8 @@ export interface Experience {
   title: string
   company: string
   years: string
+  description: string
+  projects: string
 }
 
 export interface Reference {
@@ -34,6 +36,8 @@ export interface CV {
     title: string
     company: string
     years: string
+    description: string
+  projects: string
   }[]
   references: {
     name: string

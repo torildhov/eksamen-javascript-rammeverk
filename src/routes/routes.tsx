@@ -4,29 +4,36 @@ import { Dashboard } from '../pages/Dashboard'
 import { CVList } from '../pages/CVList'
 import { CVDetail } from '../pages/CVDetail'
 import { UserManagement } from '../pages/UserManagement'
+import App from '../App'
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Login />
-  },
-  {
-    path: '/dashboard',
-    element: <Dashboard />,
+    element: <App />,
     children: [
       {
-        path: 'cvs',
+        path: '/',
+        element: <Login />
+      },
+      {
+        path: '/dashboard',
+        element: <Dashboard />
+      },
+      {
+        path: '/dashboard/cvs',
         element: <CVList />
       },
       {
-        path: 'cvs/:id',
+        path: '/dashboard/cvs/:id',
         element: <CVDetail />
       },
       {
-        path: 'users',
+        path: '/dashboard/users',
         element: <UserManagement />
       }
     ]
   }
 ])
+
+
 

@@ -11,16 +11,14 @@ export const cvService = {
         }
       })
       
-      console.log('Get CVs Response Status:', response.status)
-      
       if (response.status === 403) {
-        console.log('Access forbidden: Insufficient permissions')
+        console.log('403 Access forbidden: Insufficient permissions')
         return []
       }
       
       if (response.status === 200) {
         const data = await response.json()
-        console.log('CVs retrieved successfully:', data.items)
+        console.log('200 OK: CVs retrieved successfully:', data.items)
         return data.items || []
       }
       
@@ -29,9 +27,11 @@ export const cvService = {
       console.log('Error fetching CVs:', error)
       return []
     }
-  },
+  }
+,
 
-  async createCV(cvData: Omit<CV, '_uuid'>) {
+async createCV(cvData: Omit<CV, '_uuid'>) {
+  try {
     const response = await fetch(`${API_URL}/cvs`, {
       method: 'POST',
       headers: {
@@ -40,22 +40,27 @@ export const cvService = {
       },
       body: JSON.stringify([cvData])
     })
-    const data = await response.json()
-    return data.items?.[0] || data[0]
-  },
 
-  async deleteCV(id: string) {
-    const response = await fetch(`${API_URL}/cvs/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_KEY}`
-      }
-    })
-    return response.json()
-  },
+    if (response.status === 400) {
+      console.log('400 Bad Request: Invalid CV data')
+      return null
+    }
 
-  async updateCV(id: string, cvData: Partial<CV>) {
+    if (response.status === 201) {
+      const data = await response.json()
+      console.log('201 Created: CV created successfully:', data.items?.[0])
+      return data.items?.[0] || data[0]
+    }
+
+    return null
+  } catch (error) {
+    console.log('Error creating CV:', error)
+    return null
+  }
+},
+
+async updateCV(id: string, cvData: Partial<CV>) {
+  try {
     const response = await fetch(`${API_URL}/cvs/${id}`, {
       method: 'PUT',
       headers: {
@@ -64,6 +69,59 @@ export const cvService = {
       },
       body: JSON.stringify(cvData)
     })
-    return response.json()
+
+    if (response.status === 404) {
+      console.log('404 Not Found: CV not found')
+      return null
+    }
+
+    if (response.status === 403) {
+      console.log('403 Forbidden: Insufficient permissions')
+      return null
+    }
+
+    if (response.status === 200) {
+      const data = await response.json()
+      console.log('200 OK: CV updated successfully:', data)
+      return data
+    }
+
+    return null
+  } catch (error) {
+    console.log('Error updating CV:', error)
+    return null
   }
+},
+
+async deleteCV(id: string) {
+  try {
+    const response = await fetch(`${API_URL}/cvs/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${API_KEY}`
+      }
+    })
+
+    if (response.status === 404) {
+      console.log('404 Not Found: CV not found')
+      return null
+    }
+
+    if (response.status === 403) {
+      console.log('403 Forbidden: Insufficient permissions')
+      return null
+    }
+
+    if (response.status === 200) {
+      console.log('200 OK: CV deleted successfully')
+      return { message: 'CV deleted' }
+    }
+
+    return null
+  } catch (error) {
+    console.log('Error deleting CV:', error)
+    return null
+  }
+}
 }
