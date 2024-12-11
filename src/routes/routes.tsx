@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { Login } from '../pages/Login'
 import { Dashboard } from '../pages/Dashboard'
-import { CVList } from '../pages/CVList'
+import { CVManagement } from '../pages/CVManagement'
 import { CVDetail } from '../pages/CVDetail'
 import { UserManagement } from '../pages/UserManagement'
 import App from '../App'
@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
       },
       {
         path: '/dashboard/cvs',
-        element: <CVList />
+        element: <CVManagement />
       },
       {
         path: '/dashboard/cvs/:id',

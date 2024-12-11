@@ -74,11 +74,14 @@ export const deleteCV = createAsyncThunk('cvs/deleteCV', async (id: string) => {
 export const updateCV = createAsyncThunk(
   'cvs/updateCV',
   async ({ id, cvData }: { id: string, cvData: Partial<CV> }) => {
-    const response = await cvService.updateCV(id, cvData)
+    const dataWithTimestamp = {
+      ...cvData,
+      updatedAt: new Date().toISOString()
+    }
+    const response = await cvService.updateCV(id, dataWithTimestamp)
     return response
   }
 )
-
 const cvSlice = createSlice({
   name: 'cv',
   initialState,

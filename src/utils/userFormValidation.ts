@@ -28,19 +28,22 @@ export const validateUsername = (username: string) => {
     role: string
   }) => {
     return {
-      isValid:
-        validateUsername(formData.username) &&
-        validatePassword(formData.password) &&
-        validateUserEmail(formData.email) &&
-        validateUserName(formData.name) &&
-        validateRole(formData.role),
+      isValid: validateUsername(formData.username) &&
+               validatePassword(formData.password) &&
+               validateUserEmail(formData.email) &&
+               validateUserName(formData.name) &&
+               validateRole(formData.role),
       errors: {
-        username: !validateUsername(formData.username) ? 'Please enter a valid username' : '',
-        password: !validatePassword(formData.password) ? 'Password must be at least 8 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*#?&)'  : '',
-        email: !validateUserEmail(formData.email) ? 'Please enter a valid email address' : '',
-        name: !validateUserName(formData.name) ? 'Please enter a valid name' : '',
-        role: !validateRole(formData.role) ? 'Role must be either admin or user' : ''
+        username: !validateUsername(formData.username) ? 
+          'Username must be at least 4 characters and contain only letters, numbers, underscores or hyphens' : '',
+        password: !validatePassword(formData.password) ? 
+          'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character' : '',
+        email: !validateUserEmail(formData.email) ? 
+          'Please enter a valid email address (e.g., user@example.com)' : '',
+        name: !validateUserName(formData.name) ? 
+          'Name must be at least 2 characters and contain only letters, spaces, or hyphens' : '',
+        role: !validateRole(formData.role) ? 
+          'Role must be either "admin" or "user"' : ''
       }
     }
-  }
-  
+  }  

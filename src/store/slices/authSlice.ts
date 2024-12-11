@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction, Action } from '@reduxjs/toolkit'
 import { REHYDRATE } from 'redux-persist'
 
-interface User {
+export interface User {
   _uuid: string
   username: string
   name: string
   role: string
+  email: string
 }
 
 export interface AuthState {
