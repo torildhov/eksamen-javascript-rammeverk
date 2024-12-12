@@ -4,6 +4,12 @@ import { loginStart, loginSuccess, loginFail } from '../../src/store/slices/auth
 import type { User } from '../../src/store/slices/userSlice'
 import fetchMock from 'jest-fetch-mock'
 
+jest.mock('../../src/config/api.config', () => ({
+  API_URL: 'https://crudapi.co.uk/api/v1',
+  API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
+  BASE_URL: 'https://crudapi.co.uk/api/v1'
+}))
+
 describe('Login Operations', () => {
   beforeEach(() => {
     fetchMock.resetMocks()
@@ -73,4 +79,4 @@ describe('Login Operations', () => {
     const state = store.getState()
     expect(state.auth.loading).toBe(true)
   })
-})
+}) 

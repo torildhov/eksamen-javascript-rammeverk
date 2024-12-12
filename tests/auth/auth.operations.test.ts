@@ -1,6 +1,13 @@
 import { store } from '../../src/store/store'
 import { loginSuccess } from '../../src/store/slices/authSlice'
 
+jest.mock('../../src/config/api.config', () => ({
+  API_URL: 'https://crudapi.co.uk/api/v1',
+  API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
+  BASE_URL: 'https://crudapi.co.uk/api/v1'
+}))
+
+
 describe('Authorization Operations', () => {
   test('admin should have access to user management', () => {
     store.dispatch(loginSuccess({
@@ -28,4 +35,3 @@ describe('Authorization Operations', () => {
     expect(state.auth.user?.role).not.toBe('admin')
   })
 })
-

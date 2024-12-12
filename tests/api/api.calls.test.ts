@@ -1,7 +1,13 @@
 import fetchMock from 'jest-fetch-mock'
-import { API_URL } from '../../src/config/api.config'
+import { API_URL, API_KEY } from '../config/test.config'
 import { userService } from '../../src/services/user.service'
 import { cvService } from '../../src/services/cv.service'
+
+jest.mock('../../src/config/api.config', () => ({
+  API_URL: 'https://crudapi.co.uk/api/v1',
+  API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
+  BASE_URL: 'https://crudapi.co.uk/api/v1'
+}))
 
 beforeEach(() => {
   fetchMock.resetMocks()
@@ -34,7 +40,7 @@ describe('API Calls', () => {
         expect.objectContaining({
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': expect.any(String)
+            'Authorization': `Bearer ${API_KEY}`
           }
         })
       )

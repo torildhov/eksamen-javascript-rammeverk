@@ -61,7 +61,6 @@ export function Login() {
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-      {/* Left side - Login Form */}
       <div className="w-full md:w-1/2 mt-10 md:mt-20">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}

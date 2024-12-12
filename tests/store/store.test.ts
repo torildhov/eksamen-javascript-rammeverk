@@ -4,6 +4,12 @@ import { createCV, deleteCV } from '../../src/store/slices/cvSlice'
 import { createUser, deleteUser } from '../../src/store/slices/userSlice'
 import fetchMock from 'jest-fetch-mock'
 
+jest.mock('../../src/config/api.config', () => ({
+  API_URL: 'https://crudapi.co.uk/api/v1',
+  API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
+  BASE_URL: 'https://crudapi.co.uk/api/v1'
+}))
+
 beforeEach(() => {
   fetchMock.resetMocks()
   store.dispatch(logout())

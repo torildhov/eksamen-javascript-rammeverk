@@ -1,6 +1,12 @@
 import { cvService } from '../../src/services/cv.service'
 import fetchMock from 'jest-fetch-mock'
 
+jest.mock('../../src/config/api.config', () => ({
+  API_URL: 'https://crudapi.co.uk/api/v1',
+  API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
+  BASE_URL: 'https://crudapi.co.uk/api/v1'
+}))
+
 beforeEach(() => {
   fetchMock.resetMocks()
 })
@@ -119,4 +125,4 @@ describe('CV CRUD Operations', () => {
       expect(result).toBeNull()
     })
   })
-})
+}) 
