@@ -49,13 +49,15 @@ export const userService = {
   async createUser(userData: Omit<User, '_uuid'>) {
     try {
       const users = await this.getAllUsers()
-      const userExists = users.some((user: User) => user.username === userData.username)
+      const userExists = users.some((user: User) => 
+        user.username === userData.username
+      )
       
       if (userExists) {
         console.log('400 Bad Request: Username already exists')
         return null
       }
-
+  
       const response = await fetch(`${API_URL}/users`, {
         method: 'POST',
         headers: {
@@ -64,14 +66,17 @@ export const userService = {
         },
         body: JSON.stringify([userData])
       })
-
+  
       if (response.status === 201) {
         const data = await response.json()
-        const user = data.items?.[0] || data[0]
-        console.log('201 Created: User created successfully:', sanitizeUserForLog(user))
-        return user
+        const user = data.items?.[0]
+        if (user) {
+          console.log('201 Created: User created successfully:', 
+            sanitizeUserForLog(user))
+          return user
+        }
       }
-
+  
       return null
     } catch (error) {
       console.log('Error creating user:', error)

@@ -44,13 +44,13 @@ export interface CV {
     contactInfo: string
   }[]
 }
-interface CVState {
+export interface CVState {
   cvs: CV[]
   loading: boolean
   error: string | null
 }
 
-const initialState: CVState = {
+export const initialState: CVState = {
   cvs: [],
   loading: false,
   error: null

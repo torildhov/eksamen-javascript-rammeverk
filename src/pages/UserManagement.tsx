@@ -32,6 +32,7 @@ export function UserManagement() {
       void dispatch(fetchUsers());
     } else {
       toast.error("Username already exists");
+      void dispatch(fetchUsers());
     }
   };
 

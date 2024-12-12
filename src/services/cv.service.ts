@@ -41,15 +41,16 @@ async createCV(cvData: Omit<CV, '_uuid'>) {
       body: JSON.stringify([cvData])
     })
 
+    if (response.status === 201) {
+      const data = await response.json()
+      const createdCV = data.items?.[0] || data[0]
+      console.log('201 Created: CV created successfully:', createdCV)
+      return createdCV
+    }
+
     if (response.status === 400) {
       console.log('400 Bad Request: Invalid CV data')
       return null
-    }
-
-    if (response.status === 201) {
-      const data = await response.json()
-      console.log('201 Created: CV created successfully:', data.items?.[0])
-      return data.items?.[0] || data[0]
     }
 
     return null

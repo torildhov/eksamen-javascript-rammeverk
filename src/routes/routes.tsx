@@ -6,6 +6,7 @@ import { CVDetail } from '../pages/CVDetail'
 import { UserManagement } from '../pages/UserManagement'
 import App from '../App'
 import { ErrorPage } from '../pages/ErrorPage'
+import { AuthGuard } from '../middleware/AuthGuard'
 
 export const router = createBrowserRouter([
   {
@@ -18,20 +19,25 @@ export const router = createBrowserRouter([
         element: <Login />
       },
       {
-        path: '/dashboard',
-        element: <Dashboard />,
-      },
-      {
-        path: '/dashboard/cvs',
-        element: <CVManagement />
-      },
-      {
-        path: '/dashboard/cvs/:id',
-        element: <CVDetail />
-      },
-      {
-        path: '/dashboard/users',
-        element: <UserManagement />
+        element: <AuthGuard />,
+        children: [
+          {
+            path: '/dashboard',
+            element: <Dashboard />
+          },
+          {
+            path: '/dashboard/cvs',
+            element: <CVManagement />
+          },
+          {
+            path: '/dashboard/cvs/:id',
+            element: <CVDetail />
+          },
+          {
+            path: '/dashboard/users',
+            element: <UserManagement />
+          }
+        ]
       }
     ]
   }

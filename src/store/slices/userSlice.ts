@@ -10,13 +10,13 @@ export interface User {
   role: 'admin' | 'user'
 }
 
-interface UsersState {
+export interface UsersState {
   users: User[]
   loading: boolean
   error: string | null
 }
 
-const initialState: UsersState = {
+export const initialState: UsersState = {
   users: [],
   loading: false,
   error: null
