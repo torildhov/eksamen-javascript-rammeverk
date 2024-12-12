@@ -32,35 +32,36 @@ export const cvService = {
 
 async createCV(cvData: Omit<CV, '_uuid'>) {
   try {
+    const payload = {
+      ...cvData,
+      _user: cvData.userId,
+      _owner: cvData.userId 
+    };
+
     const response = await fetch(`${API_URL}/cvs`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${API_KEY}`
       },
-      body: JSON.stringify([cvData])
-    })
+      body: JSON.stringify([payload])
+    });
 
     if (response.status === 201) {
-      const data = await response.json()
-      const createdCV = data.items?.[0] || data[0]
-      console.log('201 Created: CV created successfully:', createdCV)
-      return createdCV
+      const data = await response.json();
+      const createdCV = data.items?.[0];
+      if (createdCV) {
+        createdCV.userId = cvData.userId;
+        console.log('201 Created: CV created successfully:', createdCV);
+        return createdCV;
+      }
     }
-
-    if (response.status === 400) {
-      console.log('400 Bad Request: Invalid CV data')
-      return null
-    }
-
-    return null
+    return null;
   } catch (error) {
-    console.log('Error creating CV:', error)
-    return null
+    console.log('Error creating CV:', error);
+    return null;
   }
-},
-
-async updateCV(id: string, cvData: Partial<CV>) {
+},async updateCV(id: string, cvData: Partial<CV>) {
   try {
     const response = await fetch(`${API_URL}/cvs/${id}`, {
       method: 'PUT',

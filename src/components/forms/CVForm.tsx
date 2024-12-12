@@ -100,12 +100,27 @@ export function CVForm({
     const validation = validateCVForm(formData);
 
     if (validation.isValid) {
+      const targetUserId = currentUser?.role === 'admin' ? selectedUserId : currentUser?._uuid;
+      
+      console.log('Selected User ID:', selectedUserId);
+      console.log('Current User:', currentUser);
+      console.log('Target User ID:', targetUserId);
+    
+
+      if (!targetUserId) {
+        return;
+      }
+
       const cvData = {
         ...formData,
-        userId: currentUser?._uuid || selectedUserId,
+        userId: targetUserId,
+        _user: targetUserId,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
+      
+      console.log('CV Data:', cvData);
+      console.log('Creating CV with data:', cvData);
       await onSubmit(cvData);
       setFormData({
         personalInfo: {

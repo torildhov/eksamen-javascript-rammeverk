@@ -98,10 +98,9 @@ export function CVManagement() {
   const handleView = (cvId: string) => {
     navigate(`/dashboard/cvs/${cvId}`)
   }
-
-  const filteredCVs = currentUser?.role === "admin"
-    ? cvs
-    : cvs.filter((cv) => cv.userId === currentUser?._uuid)
+  const filteredCVs = currentUser?.role === "admin" ? cvs : cvs.filter((cv) => 
+    cv.userId === currentUser?._uuid || cv.personalInfo.email === currentUser?.email
+  )
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
@@ -161,4 +160,3 @@ export function CVManagement() {
     </div>
   )
 }
-

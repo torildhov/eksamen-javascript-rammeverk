@@ -8,6 +8,7 @@ import { WelcomeHeader } from '../components/dashboard/WelcomeHeader'
 import { StatCards } from '../components/dashboard/StatCards'
 import { QuickGuide } from '../components/dashboard/QuickGuide'
 import { RecentCVs } from '../components/dashboard/RecentCVs'
+import type { CV } from '../store/slices/cvSlice'
 
 
 export function Dashboard() {
@@ -17,7 +18,10 @@ export function Dashboard() {
   const users = useSelector((state: RootState) => state.users.users) as User[]
   const isAdmin = typedUser?.role === 'admin'
 
-  const userCvs = cvs.filter(cv => cv.userId === typedUser?._uuid)
+  const userCvs = cvs.filter((cv: CV) => 
+    cv.userId === typedUser?._uuid || 
+    cv.personalInfo.email === typedUser?.email
+  )
   const recentCvs = isAdmin ? cvs.slice(0, 5) : userCvs.slice(0, 5)
 
   const dispatch = useDispatch<AppDispatch>()
