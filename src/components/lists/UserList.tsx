@@ -22,7 +22,7 @@ export function UserList({ users, onEdit, onDelete }: UserListProps) {
             <p className="text-sm text-gray-500">Role: {user?.role || 'N/A'}</p>
           </div>
           {user?.username !== 'admin' && (
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               <Button onClick={() => onEdit(user)}>Edit</Button>
               <Button 
                 variant="danger" 

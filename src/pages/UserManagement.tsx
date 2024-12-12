@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchUsers,
   createUser,
-  deleteUser,
   updateUser,
 } from "../store/slices/userSlice";
 import type { User } from "../store/slices/userSlice";
@@ -14,6 +13,12 @@ import { UserForm } from "../components/forms/UserForm";
 import { UserList } from "../components/lists/UserList";
 import { useModal } from "../hooks/useModal";
 import toast from "react-hot-toast";
+import { cvService } from '../services/cv.service'
+import { userService } from '../services/user.service'
+import type { CV } from '../store/slices/cvSlice'
+import { fetchCVs } from '../store/slices/cvSlice'
+
+
 
 export function UserManagement() {
   const dispatch = useDispatch<AppDispatch>();
@@ -58,14 +63,33 @@ export function UserManagement() {
     openModal();
   };
 
-  const handleDelete = async (userId: string) => {
-    const result = await dispatch(deleteUser(userId));
-    if (result.payload) {
-      toast.success("User deleted successfully");
-    } else {
-      toast.error("Failed to delete user");
+  const handleDelete = async (id: string) => {
+    const userToDelete = users.find(user => user._uuid === id);
+    if (!userToDelete) return;
+  
+    try {
+      const cvs = await cvService.getAllCVs();
+      const userCVs = cvs.filter((cv: CV) => 
+        cv.personalInfo.name === userToDelete.name
+      );
+
+      for (const cv of userCVs) {
+        if (cv._uuid) {
+          await cvService.deleteCV(cv._uuid);
+        }
+      }
+
+      const result = await userService.deleteUser(id);
+      if (result) {
+        dispatch(fetchUsers());
+        dispatch(fetchCVs());
+        toast.success("User and CVs deleted successfully");
+      }
+    } catch {
+      toast.error("Error during deletion process");
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">

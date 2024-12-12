@@ -60,9 +60,9 @@ export function Login() {
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="flex flex-col md:flex-row h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       {/* Left side - Login Form */}
-      <div className="w-1/2 mt-20">
+      <div className="w-full md:w-1/2 mt-10 md:mt-20">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Section */}
           <div className="text-left">
@@ -136,7 +136,7 @@ export function Login() {
             <h2 className="text-2xl font-bold text-white mb-8 text-center">
               Sign in to your account
             </h2>
-            <form id="login-form" onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300">
                   Username
@@ -189,7 +189,8 @@ export function Login() {
           </div>
         </div>
       </div>
-      <div className="w-1/2 flex items-end justify-center pb-8">
+      {/* Right side - Animation */}
+      <div className="hidden md:flex w-full md:w-1/2 items-end justify-center pb-8">
         <div className="w-[1000px] h-[1000px]">
           <HeroAnimation />
         </div>
