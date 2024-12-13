@@ -1,3 +1,4 @@
+// Interface for CV-data
 export interface CVFormData {
   personalInfo: {
     name: string
@@ -23,6 +24,7 @@ export interface CVFormData {
   }>
 }
 
+// Interface for valideringsfeilmeldinger
 export interface CVFormErrors {
   personalInfo: {
     name: string
@@ -48,6 +50,7 @@ export interface CVFormErrors {
   }>
 }
 
+// Valideringsfunksjoner for personlig informasjon
 export const validatePhone = (phone: string): boolean => {
   const phoneRegexWithCodeAndSpace = /^\+[0-9]{2,4}\s[0-9]{8}$/
   const phoneRegexWithCodeNoSpace = /^\+[0-9]{2,4}[0-9]{8}$/
@@ -66,10 +69,12 @@ export const validateName = (name: string): boolean => {
   return name.length >= 2 && /^[a-zA-ZæøåÆØÅ\s-]+$/.test(name)
 }
 
+// Validering av ferdigheter
 export const validateSkill = (skill: string): boolean => {
-  return skill.length >= 2 && /^[a-zA-ZæøåÆØÅ\s-+#.]+$/.test(skill)
+  return skill.length >= 2 && /^[a-zA-Z0-9æøåÆØÅ\s-+#.]+$/.test(skill)
 }
 
+// Validering av utdanning
 export const validateInstitution = (institution: string): boolean => {
   return institution.length >= 2 && /^[a-zA-ZæøåÆØÅ\s-]+$/.test(institution)
 }
@@ -84,12 +89,13 @@ export const validateYear = (year: string): boolean => {
   return !isNaN(yearNumber) && yearNumber >= 1960 && yearNumber <= currentYear
 }
 
+// Validering av arbeidserfaring
 export const validateTitle = (title: string): boolean => {
   return title.length >= 2 && /^[a-zA-ZæøåÆØÅ\s-]+$/.test(title)
 }
 
 export const validateCompany = (company: string): boolean => {
-  return company.length >= 2 && /^[a-zA-ZæøåÆØÅ\s-]+$/.test(company)
+  return company.length >= 2 && /^[a-zA-Z0-9æøåÆØÅ\s-]+$/.test(company)
 }
 
 export const validateYears = (years: string): boolean => {
@@ -109,6 +115,7 @@ export const validateProjects = (projects: string): boolean => {
   return wordCount <= 150
 }
 
+// Validering av referanser
 export const validateRefName = (name: string): boolean => {
   return name.length >= 2 && /^[a-zA-ZæøåÆØÅ\s-]+$/.test(name)
 }
@@ -117,6 +124,7 @@ export const validateContactInfo = (contactInfo: string): boolean => {
   return validateEmail(contactInfo) || validatePhone(contactInfo)
 }
 
+// Hovedvalidering med errorkoder for CV-skjema
 export const validateCVForm = (formData: CVFormData) => {
   const errors: CVFormErrors = {
     personalInfo: {

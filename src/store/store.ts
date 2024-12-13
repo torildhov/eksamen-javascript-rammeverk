@@ -48,7 +48,7 @@ export const store = configureStore({
     })
 })
 
-// Oppretter persistor for Redux Persist
+// Oppretter Redux Persist-lagring
 export const persistor = persistStore(store)
 // Eksporterer dispatch type for typesikkerhet
 export type AppDispatch = typeof store.dispatch
