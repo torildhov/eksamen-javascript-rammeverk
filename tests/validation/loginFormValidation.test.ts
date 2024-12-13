@@ -1,6 +1,8 @@
 import { validateUsername, validatePassword, getLoginValidationError } from '../../src/utils/loginFormValidation'
 
+// Hovedtestgruppe for innloggingsskjemavalidering
 describe('Login Form Validation', () => {
+  // Tester for validering av brukernavn
   describe('Username Validation', () => {
     test('should validate correct username', () => {
       expect(validateUsername('user123')).toBe(true)
@@ -15,6 +17,7 @@ describe('Login Form Validation', () => {
     })
   })
 
+  // Tester for validering av passord
   describe('Password Validation', () => {
     test('should validate password length >= 8', () => {
       expect(validatePassword('password123')).toBe(true)
@@ -22,6 +25,7 @@ describe('Login Form Validation', () => {
     })
   })
 
+  // Tester for feilmeldinger ved validering
   describe('Login Validation Error Messages', () => {
     test('should return appropriate error messages', () => {
       expect(getLoginValidationError('username', '')).toBe('Username is required')
@@ -29,6 +33,7 @@ describe('Login Form Validation', () => {
     })
   })
 
+  // Tester for innsending av skjemadata
   describe('Form Data Submission', () => {
     const testCredentials = {
       username: 'testuser',

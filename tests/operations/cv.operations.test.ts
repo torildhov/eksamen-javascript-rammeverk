@@ -1,16 +1,19 @@
 import { cvService } from '../../src/services/cv.service'
 import fetchMock from 'jest-fetch-mock'
 
+// Mocker API-konfigurasjon for testing
 jest.mock('../../src/config/api.config', () => ({
   API_URL: 'https://crudapi.co.uk/api/v1',
   API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
   BASE_URL: 'https://crudapi.co.uk/api/v1'
 }))
 
+// Nullstiller mock før hver test
 beforeEach(() => {
   fetchMock.resetMocks()
 })
 
+// Oppsett av test-CV data
 const mockCV = {
   personalInfo: {
     name: 'Test User',
@@ -39,9 +42,11 @@ const mockCV = {
   updatedAt: new Date().toISOString()
 }
 
+// Hovedtestgruppe for CV-operasjoner
 describe('CV CRUD Operations', () => {
   let createdCVId: string
 
+  // Tester for opprettelse av CV
   describe('Create CV', () => {
     test('should create new CV', async () => {
       const mockResponse = { ...mockCV, _uuid: '123' }
@@ -68,6 +73,7 @@ describe('CV CRUD Operations', () => {
     })
   })
 
+  // Tester for henting av CVer
   describe('Read CV', () => {
     test('should fetch all CVs', async () => {
       const mockCVs = [
@@ -82,6 +88,7 @@ describe('CV CRUD Operations', () => {
     })
   })
 
+  // Tester for oppdatering av CV
   describe('Update CV', () => {
     test('should update existing CV', async () => {
       const updateData = {
@@ -110,6 +117,7 @@ describe('CV CRUD Operations', () => {
     })
   })
 
+  // Tester for sletting av CV
   describe('Delete CV', () => {
     test('should delete existing CV', async () => {
       fetchMock.mockResponseOnce(JSON.stringify({ success: true }), { status: 200 })
@@ -125,4 +133,4 @@ describe('CV CRUD Operations', () => {
       expect(result).toBeNull()
     })
   })
-}) 
+})

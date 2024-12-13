@@ -1,3 +1,4 @@
+// Importerer nødvendige hooks og komponenter for innloggingshåndtering
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -6,25 +7,30 @@ import { userService } from "../services/user.service";
 import type { User } from "../store/slices/userSlice";
 import { HeroAnimation } from "../components/ui/HeroAnimation";
 
+// Definerer interface for påloggingsdata
 interface Credentials {
   username: string;
   password: string;
 }
 
+// Hovedkomponent for innloggingssiden
 export function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // Tilstand for brukerens påloggingsinformasjon
   const [credentials, setCredentials] = useState<Credentials>({
     username: "",
     password: "",
   });
 
+  // Tilstand for håndtering av feilmeldinger
   const [errors, setErrors] = useState({
     username: "",
     password: "",
     general: "",
   });
 
+  // Håndterer innsending av påloggingsskjema
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({ username: "", password: "", general: "" });
@@ -63,7 +69,7 @@ export function Login() {
     <div className="flex flex-col md:flex-row h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="w-full md:w-1/2 mt-10 md:mt-20">
         <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Section */}
+          {/* Hero-seksjon med hovedtittel og beskrivelse */}
           <div className="text-left">
             <h1 className="text-4xl font-extrabold text-white sm:text-5xl">
               CV Builder
@@ -73,7 +79,7 @@ export function Login() {
             </p>
           </div>
 
-          {/* Features List */}
+          {/* Funksjonalitetsliste med ikoner */}
           <div className="mt-8 space-y-4">
             <div className="flex items-center text-gray-300">
               <svg
@@ -125,7 +131,7 @@ export function Login() {
             </div>
           </div>
 
-          {/* Login Form */}
+          {/* Innloggingsskjema med feilhåndtering */}
           {errors.general && (
             <div className="text-red-500 text-center mb-4">
               {errors.general}
@@ -188,7 +194,8 @@ export function Login() {
           </div>
         </div>
       </div>
-      {/* Right side - Animation */}
+      
+      {/* Høyre side med animasjon */}
       <div className="hidden md:flex w-full md:w-1/2 items-end justify-center pb-8">
         <div className="w-[1000px] h-[1000px]">
           <HeroAnimation />

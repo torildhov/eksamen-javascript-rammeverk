@@ -14,13 +14,21 @@ import { useNavigate } from "react-router-dom"
 import toast from "react-hot-toast"
 import { validateCVForm, type CVFormErrors } from '../utils/CVFormValidation'
 
+// Hovedkomponent for CV-administrasjon
 export function CVManagement() {
+  // Hooks for tilstand og navigasjon
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
+  
+  // Henter data fra Redux store
   const cvs = useSelector((state: RootState) => state.cv.cvs)
   const currentUser = useSelector((state: RootState) => state.auth.user as User | null)
   const users = useSelector((state: RootState) => state.users.users)
+  
+  // Modal-håndtering
   const { isOpen, openModal, closeModal } = useModal()
+  
+  // Lokal tilstand
   const [selectedCV, setSelectedCV] = useState<CV | null>(null)
   const [formErrors, setFormErrors] = useState<CVFormErrors>({
     personalInfo: { name: '', email: '', phone: '' },
@@ -30,6 +38,7 @@ export function CVManagement() {
     references: []
   })
 
+  // Henter CVer og brukere ved oppstart
   useEffect(() => {
     void dispatch(fetchCVs())
     if (currentUser?.role === "admin") {
@@ -37,6 +46,7 @@ export function CVManagement() {
     }
   }, [dispatch, currentUser])
 
+  // Håndterer opprettelse av ny CV
   const handleCreate = async (cvData: Omit<CV, "_uuid">) => {
     const validation = validateCVForm(cvData)
     if (validation.isValid) {
@@ -55,8 +65,8 @@ export function CVManagement() {
       setFormErrors(validation.errors)
     }
   }
-  
 
+  // Håndterer oppdatering av eksisterende CV
   const handleUpdate = async (cvData: Partial<CV>) => {
     if (selectedCV?._uuid) {
       const validation = validateCVForm(cvData as Required<Omit<CV, '_uuid'>>)
@@ -81,6 +91,7 @@ export function CVManagement() {
     }
   }
 
+  // Håndterere for redigering, sletting og visning
   const handleEdit = (cv: CV) => {
     setSelectedCV(cv)
     openModal()
@@ -98,13 +109,17 @@ export function CVManagement() {
   const handleView = (cvId: string) => {
     navigate(`/dashboard/cvs/${cvId}`)
   }
+
+  // Filtrerer CVer basert på brukerrolle
   const filteredCVs = currentUser?.role === "admin" ? cvs : cvs.filter((cv) => 
     cv.userId === currentUser?._uuid || cv.personalInfo.email === currentUser?.email
   )
 
+  // Rendrer hovedinnholdet
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
       <div className="w-full max-w-4xl space-y-8">
+        {/* Hero-seksjon */}
         <div className="bg-gradient-to-r from-orange-400 to-orange-500 rounded-2xl p-6 shadow-xl mb-8 mt-8">
           <h2 className="text-2xl font-bold text-white mb-3">CV Management</h2>
           <div className="text-white/90 space-y-2">
@@ -126,6 +141,7 @@ export function CVManagement() {
           </div>
         </div>
 
+        {/* CV-skjema og liste */}
         <Card title="Create New CV">
           <CVForm
             onSubmit={handleCreate}
@@ -145,6 +161,7 @@ export function CVManagement() {
           />
         </Card>
 
+        {/* Redigeringsmodal */}
         <Modal isOpen={isOpen} onClose={closeModal} title="Edit CV" maxWidth="3xl">
           <CVForm
             onSubmit={handleUpdate}

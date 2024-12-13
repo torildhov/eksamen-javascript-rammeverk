@@ -1,18 +1,22 @@
 import { Link } from 'react-router-dom'
 import type { CV } from '../../store/slices/cvSlice'
 
+// Interface som definerer props for nylig opprettede CVer
 interface RecentCVsProps {
   recentCvs: CV[]
 }
 
+// Komponent som viser en liste over de siste opprettede/redigerte CV-ene
 export function RecentCVs({ recentCvs }: RecentCVsProps) {
   return (
     <div className="mt-8 backdrop-blur-lg bg-white/10 rounded-2xl p-6 shadow-xl">
       <h2 className="text-2xl font-bold text-white mb-6">Recent CVs</h2>
       <div className="grid gap-4">
+        {/* Mapper gjennom alle nylige CVer og lager klikkbare lenker */}
         {recentCvs.map(cv => (
           <Link 
             key={cv._uuid} 
+            // Dynamisk ruting basert på CV-ID
             to={`/dashboard/cvs/${cv._uuid}`}
             className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 group"
           >
@@ -38,4 +42,5 @@ export function RecentCVs({ recentCvs }: RecentCVsProps) {
     </div>
   )
 }
+
 

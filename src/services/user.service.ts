@@ -9,15 +9,18 @@ interface User {
   role: 'admin' | 'user'
 }
 
+// Type for bruker uten passord (for sikker logging)
 type SanitizedUser = Omit<User, 'password'>;
 
-
+// Hjelpefunksjon for å fjerne sensitiv informasjon før logging
 const sanitizeUserForLog = (user: User): SanitizedUser => {
   const { name, email, username, role, _uuid } = user;
   return { name, email, username, role, _uuid };
 };
 
+// Objekt som inneholder alle bruker-relaterte API-tjenester
 export const userService = {
+  // Henter alle brukere
   async getAllUsers() {
     try {
       const response = await fetch(`${API_URL}/users`, {
@@ -27,11 +30,13 @@ export const userService = {
         }
       })
       
+      // Håndterer manglende tilgangsrettigheter
       if (response.status === 403) {
         console.log('403 Access forbidden: Insufficient permissions')
         return []
       }
       
+      // Håndterer vellykket respons
       if (response.status === 200) {
         const data = await response.json()
         const sanitizedUsers = data.items?.map(sanitizeUserForLog) || []
@@ -46,8 +51,10 @@ export const userService = {
     }
   },
 
+  // Oppretter ny bruker
   async createUser(userData: Omit<User, '_uuid'>) {
     try {
+      // Sjekker om brukernavn allerede eksisterer
       const users = await this.getAllUsers()
       const userExists = users.some((user: User) => 
         user.username === userData.username
@@ -67,6 +74,7 @@ export const userService = {
         body: JSON.stringify([userData])
       })
   
+      // Håndterer vellykket opprettelse
       if (response.status === 201) {
         const data = await response.json()
         const user = data.items?.[0]
@@ -84,6 +92,7 @@ export const userService = {
     }
   },
 
+  // Oppdaterer eksisterende bruker
   async updateUser(id: string, userData: Partial<User>) {
     try {
       const response = await fetch(`${API_URL}/users/${id}`, {
@@ -95,6 +104,7 @@ export const userService = {
         body: JSON.stringify(userData)
       })
 
+      // Håndterer ulike responskoder
       if (response.status === 404) {
         console.log('404 Not Found: User not found')
         return null
@@ -118,6 +128,7 @@ export const userService = {
     }
   },
 
+  // Sletter bruker
   async deleteUser(id: string) {
     try {
       const response = await fetch(`${API_URL}/users/${id}`, {
@@ -128,6 +139,7 @@ export const userService = {
         }
       })
 
+      // Håndterer ulike responskoder
       if (response.status === 404) {
         console.log('404 Not Found: User not found')
         return null
@@ -150,6 +162,7 @@ export const userService = {
     }
   },
 
+  // Initialiserer admin-bruker hvis den ikke eksisterer
   async initializeAdminUser() {
     const users = await this.getAllUsers()
     const adminExists = Array.isArray(users) && users.some(user => user.username === 'admin')

@@ -1,6 +1,8 @@
+// Importerer nødvendige komponenter fra react-pdf/renderer for å generere PDF-dokumenter
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
 import type { CV } from '../../store/slices/cvSlice'
 
+// Interface som definerer props for CV-dokumentet, inkludert CV-data og valgte seksjoner som skal vises
 interface CVDocumentProps {
   cv: CV
   selectedSections: {
@@ -11,36 +13,42 @@ interface CVDocumentProps {
   }
 }
 
+// Definerer alle stilene som brukes i PDF-dokumentet med react-pdf's StyleSheet
 const styles = StyleSheet.create({
+  // Hovedstilen for PDF-siden med vertikal layout og hvit bakgrunn
   page: {
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
     padding: 40
   },
+  // Header-seksjon stil med understrek og spacing
   header: {
     borderBottom: '2px solid #1F2937',
     paddingBottom: 15,
     marginBottom: 25,
-    // Add to ensure visibility
     width: '100%',
     display: 'flex',
     flexDirection: 'column'
   },
+  // Stil for navnet i header
   name: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#1F2937',
     letterSpacing: 1
   },
+  // Stil for kontaktinformasjon-container
   contactInfo: {
     flexDirection: 'row',
     gap: 20,
     marginTop: 8
   },
+  // Stil for kontaktinformasjon-tekst
   contactText: {
     fontSize: 11,
     color: '#4B5563'
   },
+  // Stil for seksjonsoverskrifter
   sectionTitle: {
     fontSize: 16,
     color: '#1F2937',
@@ -50,12 +58,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1
   },
+  // Container for ferdigheter med flex-wrap
   skillsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
     marginBottom: 15
   },
+  // Stil for individuelle ferdighets-tags
   skill: {
     backgroundColor: '#EFF6FF',
     padding: '6 12',
@@ -63,27 +73,32 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#1D4ED8'
   },
+  // Stil for erfarings-elementer med venstre border
   experienceItem: {
     marginBottom: 15,
     paddingLeft: 12,
     borderLeft: '2px solid #E5E7EB'
   },
+  // Stil for jobbtitler
   jobTitle: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#1F2937',
     marginBottom: 3
   },
+  // Stil for firmanavn
   company: {
     fontSize: 12,
     color: '#374151',
     marginBottom: 3
   },
+  // Stil for tidsperioder
   period: {
     fontSize: 10,
     color: '#6B7280',
     marginBottom: 6
   },
+  // Stil for beskrivelse-overskrifter
   descriptionTitle: {
     fontSize: 11,
     fontWeight: 'bold',
@@ -91,6 +106,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     marginBottom: 3
   },
+  // Stil for beskrivelsestekst
   description: {
     fontSize: 10,
     color: '#4B5563',
@@ -99,7 +115,9 @@ const styles = StyleSheet.create({
   }
 })
 
+// Hovedkomponent for PDF-generering
 export function CVDocument({ cv, selectedSections }: CVDocumentProps) {
+  // Sjekker om nødvendig personlig informasjon eksisterer
   if (!cv?.personalInfo) {
     console.error('Missing personal info')
     return null
@@ -108,7 +126,7 @@ export function CVDocument({ cv, selectedSections }: CVDocumentProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Personal Info Section */}
+        {/* Personlig informasjon seksjonen */}
         <View style={[styles.header, { marginTop: 0 }]}>
           <Text style={[styles.name, { color: '#1F2937' }]}>
             {cv.personalInfo.name}
@@ -119,6 +137,8 @@ export function CVDocument({ cv, selectedSections }: CVDocumentProps) {
             <Text style={styles.contactText}>{cv.personalInfo.phone}</Text>
           </View>
         </View>
+
+        {/* Ferdigheter-seksjon */}
         {selectedSections.skills.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>Skills</Text>
@@ -132,6 +152,7 @@ export function CVDocument({ cv, selectedSections }: CVDocumentProps) {
           </View>
         )}
 
+        {/* Utdanning-seksjon */}
         {selectedSections.education.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>Education</Text>
@@ -147,6 +168,7 @@ export function CVDocument({ cv, selectedSections }: CVDocumentProps) {
           </View>
         )}
 
+        {/* Arbeidserfaring-seksjon */}
         {selectedSections.experience.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>Experience</Text>
@@ -166,6 +188,7 @@ export function CVDocument({ cv, selectedSections }: CVDocumentProps) {
           </View>
         )}
 
+        {/* Referanser-seksjon */}
         {selectedSections.references.length > 0 && (
           <View>
             <Text style={styles.sectionTitle}>References</Text>

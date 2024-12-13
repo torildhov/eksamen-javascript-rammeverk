@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { userService } from '../../services/user.service'
 
+// Definerer brukertype med alle nødvendige felt
 export interface User {
   _uuid?: string
   name: string
@@ -10,33 +11,39 @@ export interface User {
   role: 'admin' | 'user'
 }
 
+// Definerer tilstandstype for brukerhåndtering
 export interface UsersState {
   users: User[]
   loading: boolean
   error: string | null
 }
 
+// Initial tilstand for user-slice
 export const initialState: UsersState = {
   users: [],
   loading: false,
   error: null
 }
 
+// Asynkron thunk for å hente alle brukere
 export const fetchUsers = createAsyncThunk('users/fetchUsers', async () => {
   const response = await userService.getAllUsers()
   return response
 })
 
+// Asynkron thunk for å opprette ny bruker
 export const createUser = createAsyncThunk('users/createUser', async (userData: Omit<User, '_uuid'>) => {
   const response = await userService.createUser(userData)
   return response
 })
 
+// Asynkron thunk for å slette bruker
 export const deleteUser = createAsyncThunk('users/deleteUser', async (id: string) => {
   await userService.deleteUser(id)
   return id
 })
 
+// Asynkron thunk for å oppdatere bruker
 export const updateUser = createAsyncThunk(
   'users/updateUser',
   async ({ id, userData }: { id: string, userData: Partial<User> }) => {
@@ -45,12 +52,15 @@ export const updateUser = createAsyncThunk(
   }
 )
 
+// Oppretter user-slice med reducers for tilstandshåndtering
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {},
+  // Håndterer tilstandsendringer for asynkrone operasjoner
   extraReducers: (builder) => {
     builder
+      // Håndterer henting av brukere
       .addCase(fetchUsers.pending, (state) => {
         state.loading = true
         state.error = null
@@ -64,6 +74,7 @@ const usersSlice = createSlice({
         state.error = action.error.message || 'Failed to fetch users'
       })
       
+      // Håndterer opprettelse av bruker
       .addCase(createUser.pending, (state) => {
         state.loading = true
         state.error = null
@@ -77,6 +88,7 @@ const usersSlice = createSlice({
         state.error = action.error.message || 'Failed to create user'
       })
       
+      // Håndterer sletting av bruker
       .addCase(deleteUser.pending, (state) => {
         state.loading = true
         state.error = null
@@ -90,6 +102,7 @@ const usersSlice = createSlice({
         state.error = action.error.message || 'Failed to delete user'
       })
 
+      // Håndterer oppdatering av bruker
       .addCase(updateUser.pending, (state) => {
         state.loading = true
         state.error = null

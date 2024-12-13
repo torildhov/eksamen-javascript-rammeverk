@@ -18,18 +18,20 @@ import { userService } from '../services/user.service'
 import type { CV } from '../store/slices/cvSlice'
 import { fetchCVs } from '../store/slices/cvSlice'
 
-
-
+// Hovedkomponent for brukeradministrasjon
 export function UserManagement() {
+  // Hooks for tilstand og dispatch
   const dispatch = useDispatch<AppDispatch>();
   const users = useSelector((state: RootState) => state.users.users);
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  // Henter brukerliste ved oppstart
   useEffect(() => {
     void dispatch(fetchUsers());
   }, [dispatch]);
 
+  // Håndterer opprettelse av ny bruker
   const handleCreate = async (userData: Omit<User, "_uuid">) => {
     const result = await dispatch(createUser(userData));
     if (result.payload) {
@@ -41,6 +43,7 @@ export function UserManagement() {
     }
   };
 
+  // Håndterer oppdatering av eksisterende bruker
   const handleUpdate = async (userData: Partial<User>) => {
     if (selectedUser?._uuid) {
       const result = await dispatch(
@@ -58,11 +61,13 @@ export function UserManagement() {
     }
   };
 
+  // Håndterer redigering av bruker
   const handleEdit = (user: User) => {
     setSelectedUser(user);
     openModal();
   };
 
+  // Håndterer sletting av bruker og tilhørende CVer
   const handleDelete = async (id: string) => {
     const userToDelete = users.find(user => user._uuid === id);
     if (!userToDelete) return;
@@ -90,7 +95,7 @@ export function UserManagement() {
     }
   };
   
-
+  // Rendrer brukeradministrasjonsgrensesnittet
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-900">
       <div className="w-full max-w-4xl space-y-8">
@@ -115,3 +120,4 @@ export function UserManagement() {
     </div>
   );
 }
+

@@ -4,6 +4,7 @@ import { Button } from "../ui/Button";
 import { validateUserForm } from "../../utils/userFormValidation";
 import type { User } from "../../store/slices/userSlice";
 
+// Interface for å håndtere skjemafeil
 interface FormErrors {
   username: string;
   password: string;
@@ -12,6 +13,7 @@ interface FormErrors {
   role: string;
 }
 
+// Props-interface for brukersskjemaet
 interface UserFormProps {
   onSubmit: (userData: Omit<User, "_uuid">) => Promise<void>
   initialData?: Partial<User>
@@ -20,6 +22,7 @@ interface UserFormProps {
   onCancel?: () => void
 }
 
+// Hovedkomponent for brukerskjemaet
 export function UserForm({
   onSubmit,
   initialData = {},
@@ -27,6 +30,7 @@ export function UserForm({
   isModal = false,
   onCancel
 }: UserFormProps) {
+  // State for skjemadata med standardverdier
   const [formData, setFormData] = useState({
     name: initialData.name || "",
     email: initialData.email || "",
@@ -35,6 +39,7 @@ export function UserForm({
     role: initialData.role || "user",
   });
 
+  // State for håndtering av valideringsfeil
   const [localFormErrors, setLocalFormErrors] = useState<FormErrors>({
     username: "",
     password: "",
@@ -43,11 +48,13 @@ export function UserForm({
     role: "",
   });
 
+  // Håndterer innsending av skjemaet
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validation = validateUserForm(formData);
 
     if (validation.isValid) {
+      // Sender data og nullstiller skjemaet ved suksess
       await onSubmit(formData);
       setFormData({
         name: '',
@@ -64,10 +71,12 @@ export function UserForm({
         role: ''
       })
     } else {
+      // Setter valideringsfeil hvis validering feiler
       setLocalFormErrors(validation.errors);
     }
   };
 
+  // Håndterer endringer i inputfelt
   const handleInputChange = (field: keyof FormErrors, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setLocalFormErrors((prev) => ({ ...prev, [field]: "" }));
@@ -75,6 +84,7 @@ export function UserForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Navnefelt */}
       <Input
         label="Name"
         value={formData.name}
@@ -83,6 +93,7 @@ export function UserForm({
         required
       />
 
+      {/* Brukernavnfelt */}
       <Input
         label="Username"
         value={formData.username}
@@ -91,6 +102,7 @@ export function UserForm({
         required
       />
 
+      {/* E-post felt */}
       <Input
         label="Email"
         type="email"
@@ -100,6 +112,7 @@ export function UserForm({
         required
       />
 
+      {/* Passordfelt */}
       <Input
         label="Password"
         type="password"
@@ -109,6 +122,7 @@ export function UserForm({
         required
       />
 
+      {/* Rollevelger */}
       <div>
         <label className="block text-sm font-medium text-gray-900">Role</label>
         <select
@@ -127,15 +141,16 @@ export function UserForm({
         )}
       </div>
 
+      {/* Knapper */}
       <div className="flex justify-end gap-4">
-  <Button type="submit">{submitLabel}</Button>
-  {isModal && (
-    <Button variant="danger" onClick={onCancel} type="button">
-      Cancel
-    </Button>
-  )}
-</div>
-
+        <Button type="submit">{submitLabel}</Button>
+        {isModal && (
+          <Button variant="danger" onClick={onCancel} type="button">
+            Cancel
+          </Button>
+        )}
+      </div>
     </form>
   );
 }
+

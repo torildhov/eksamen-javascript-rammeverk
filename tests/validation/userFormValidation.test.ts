@@ -1,6 +1,8 @@
 import { validateUsername, validatePassword, validateUserEmail, validateUserName, validateRole, validateUserForm } from '../../src/utils/userFormValidation'
 
+// Hovedtestgruppe for brukerskjemavalidering
 describe('User Form Validation', () => {
+  // Tester for validering av enkeltfelter
   describe('Field Validations', () => {
     test('validateUsername', () => {
       expect(validateUsername('validuser')).toBe(true)
@@ -32,6 +34,7 @@ describe('User Form Validation', () => {
     })
   })
 
+  // Tester for innsending av skjemadata
   describe('Form Data Submission', () => {
     const testUserData = {
       username: 'testuser',

@@ -7,25 +7,32 @@ import { CVPreview } from '../components/cv/CVPreview'
 import { CVExport } from '../components/cv/CVExport'
 import { CVSelectionForm } from '../components/cv/CVSelectionForm'
 
+// Hovedkomponent for CV-detaljvisning og eksport
 export function CVDetail() {
+  // Henter CV-ID fra URL-parametere
   const { id } = useParams()
+  // Henter CV-data fra Redux store basert på ID
   const cv = useSelector((state: RootState) => 
     state.cv.cvs.find(cv => cv._uuid === id)
   )
   const dispatch = useDispatch<AppDispatch>()
   
+  // Tilstand for valgte seksjoner i CV-en
   const [selectedSections, setSelectedSections] = useState({
     skills: cv?.skills || [],
     education: cv?.education.map(edu => edu.institution) || [],
     experience: cv?.experience.map(exp => exp.title) || [],
     references: cv?.references.map(ref => ref.name) || []
   })
+  // Tilstand for søk etter ferdigheter
   const [searchSkill, setSearchSkill] = useState('')
 
+  // Effekt for å laste CV-data hvis den ikke finnes
   useEffect(() => {
     if (!cv) {
       void dispatch(fetchCVs())
     } else {
+      // Oppdaterer valgte seksjoner når CV-data er tilgjengelig
       setSelectedSections({
         skills: cv.skills,
         education: cv.education.map(edu => edu.institution),
@@ -34,12 +41,15 @@ export function CVDetail() {
       })
     }
   }, [cv, dispatch])
+
+  // Viser lasteskjerm hvis CV ikke er tilgjengelig
   if (!cv) return <div>Loading...</div>
 
+  // Rendrer hovedinnholdet med CV-eksport funksjonalitet
   return (
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-4xl mx-auto">
-        {/* Hero Section */}
+        {/* Hero-seksjon med instruksjoner */}
         <div className="bg-gradient-to-r from-orange-400 to-orange-500 rounded-lg shadow-lg p-6 mb-8">
           <h2 className="text-2xl font-bold text-white mb-3">Export Your Professional CV</h2>
           <div className="text-white/90 space-y-2">
@@ -61,9 +71,11 @@ export function CVDetail() {
           </div>
         </div>
 
+        {/* Hovedinnhold med CV-redigering og forhåndsvisning */}
         <div className="max-w-4xl mx-auto bg-gray-100 rounded-lg shadow-lg p-8">
           <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">Export CV</h2>
           
+          {/* Skjema for å velge CV-seksjoner */}
           <CVSelectionForm 
             cv={cv}
             selectedSections={selectedSections}
@@ -77,12 +89,11 @@ export function CVDetail() {
             onSearchSkillChange={setSearchSkill}
           />
 
+          {/* Eksport-knapp og PDF-forhåndsvisning */}
           <CVExport cv={cv} selectedSections={selectedSections} />
-          
           <CVPreview cv={cv} selectedSections={selectedSections} />
         </div>
       </div>
     </div>
   )
 }
-

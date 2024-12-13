@@ -1,9 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../store/slices/authSlice";
-import reactLogo from "../assets/react.svg";
-import type { RootState } from "../store/store";
-import type { AppDispatch } from "../store/store";
+import { logout } from "../../store/slices/authSlice";
+import reactLogo from "../../assets/react.svg";
+import type { RootState } from "../../store/store";
+import type { AppDispatch } from "../../store/store";
 
 export function Header() {
   const navigate = useNavigate();

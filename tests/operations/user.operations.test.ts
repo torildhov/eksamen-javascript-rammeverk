@@ -2,16 +2,19 @@ import { userService } from '../../src/services/user.service'
 import fetchMock from 'jest-fetch-mock'
 import { cvService } from '../../src/services/cv.service'
 
+// Mocker API-konfigurasjon for testing
 jest.mock('../../src/config/api.config', () => ({
   API_URL: 'https://crudapi.co.uk/api/v1',
   API_KEY: 'mpoFHffvbuyRgXjeK6FqT9f-dkp_BRdX5pdhJsMvT5CeUj_ibQ',
   BASE_URL: 'https://crudapi.co.uk/api/v1'
 }))
 
+// Nullstiller mock før hver test
 beforeEach(() => {
   fetchMock.resetMocks()
 })
 
+// Oppsett av test-bruker data
 const mockUser = {
   name: 'Test User',
   email: 'test@example.com',
@@ -20,9 +23,11 @@ const mockUser = {
   role: 'user' as const
 }
 
+// Hovedtestgruppe for brukeroperasjoner
 describe('User CRUD Operations', () => {
   let createdUserId: string
 
+  // Tester for opprettelse av bruker
   describe('Create User', () => {
     test('should create new user', async () => {
       fetchMock.mockResponseOnce(JSON.stringify({ items: [] }))
@@ -52,6 +57,7 @@ describe('User CRUD Operations', () => {
     })
   })
 
+  // Tester for henting av brukere
   describe('Read Users', () => {
     test('should fetch all users', async () => {
       const mockUsers = [
@@ -66,6 +72,7 @@ describe('User CRUD Operations', () => {
     })
   })
 
+  // Tester for oppdatering av bruker
   describe('Update User', () => {
     test('should update existing user', async () => {
       const updateData = {
@@ -91,6 +98,7 @@ describe('User CRUD Operations', () => {
     })
   })
 
+  // Tester for sletting av bruker
   describe('Delete User', () => {
     test('should delete existing user', async () => {
       fetchMock.mockResponseOnce(JSON.stringify({ success: true }))
@@ -107,6 +115,7 @@ describe('User CRUD Operations', () => {
     })
   })
 
+  // Tester for sletting av bruker med tilhørende CVer
   describe('Delete User with CVs', () => {
       test('should delete user and associated CVs', async () => {
         const mockCVs = [
@@ -141,4 +150,4 @@ describe('User CRUD Operations', () => {
         expect(deleteCVCalls.length).toBe(1)
       })
   })
-}) 
+})

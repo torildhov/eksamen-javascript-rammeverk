@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { cvService } from '../../services/cv.service'
 
+// Definerer typer for CV-strukturen
 export interface Education {
   institution: string
   degree: string
@@ -20,6 +21,7 @@ export interface Reference {
   contactInfo: string
 }
 
+// Hovedtype for CV med all nødvendig informasjon
 export interface CV {
   _uuid?: string
   userId: string
@@ -37,40 +39,47 @@ export interface CV {
     company: string
     years: string
     description: string
-  projects: string
+    projects: string
   }[]
   references: {
     name: string
     contactInfo: string
   }[]
 }
+
+// Definerer tilstandstype for CV-håndtering
 export interface CVState {
   cvs: CV[]
   loading: boolean
   error: string | null
 }
 
+// Initial tilstand for CV-slice
 export const initialState: CVState = {
   cvs: [],
   loading: false,
   error: null
 }
 
+// Asynkron thunk for å hente alle CVer
 export const fetchCVs = createAsyncThunk('cvs/fetchCVs', async () => {
   const response = await cvService.getAllCVs()
   return response
 })
 
+// Asynkron thunk for å opprette ny CV
 export const createCV = createAsyncThunk('cvs/createCV', async (cvData: Omit<CV, '_uuid'>) => {
   const response = await cvService.createCV(cvData)
   return response
 })
 
+// Asynkron thunk for å slette CV
 export const deleteCV = createAsyncThunk('cvs/deleteCV', async (id: string) => {
   await cvService.deleteCV(id)
   return id
 })
 
+// Asynkron thunk for å oppdatere CV
 export const updateCV = createAsyncThunk(
   'cvs/updateCV',
   async ({ id, cvData }: { id: string, cvData: Partial<CV> }) => {
@@ -82,12 +91,16 @@ export const updateCV = createAsyncThunk(
     return response
   }
 )
+
+// Oppretter CV-slice med reducers for tilstandshåndtering
 const cvSlice = createSlice({
   name: 'cv',
   initialState,
   reducers: {},
+  // Håndterer tilstandsendringer for asynkrone operasjoner
   extraReducers: (builder) => {
     builder
+      // Håndterer henting av CVer
       .addCase(fetchCVs.pending, (state) => {
         state.loading = true
         state.error = null
@@ -101,6 +114,7 @@ const cvSlice = createSlice({
         state.error = action.error.message || 'Failed to fetch CVs'
       })
       
+      // Håndterer opprettelse av CV
       .addCase(createCV.pending, (state) => {
         state.loading = true
         state.error = null
@@ -114,6 +128,7 @@ const cvSlice = createSlice({
         state.error = action.error.message || 'Failed to create CV'
       })
       
+      // Håndterer sletting av CV
       .addCase(deleteCV.pending, (state) => {
         state.loading = true
         state.error = null
@@ -127,6 +142,7 @@ const cvSlice = createSlice({
         state.error = action.error.message || 'Failed to delete CV'
       })
 
+      // Håndterer oppdatering av CV
       .addCase(updateCV.pending, (state) => {
         state.loading = true
         state.error = null

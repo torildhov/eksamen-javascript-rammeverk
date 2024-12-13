@@ -5,15 +5,18 @@ import authReducer, { AuthState } from './slices/authSlice'
 import usersReducer from './slices/userSlice'
 import cvReducer from './slices/cvSlice'
 
+// Definerer root state type for hele applikasjonen
 export interface RootState {
   auth: AuthState
   users: ReturnType<typeof usersReducer>
   cv: ReturnType<typeof cvReducer>
 }
 
+// Konfigurasjon for Redux Persist
 const persistConfig = {
   key: 'root',
   storage,
+  // Transformerer data ved lagring og henting
   transforms: [
     {
       in: (state: AuthState) => {
@@ -26,14 +29,17 @@ const persistConfig = {
   ]
 }
 
+// Setter opp persistent auth reducer
 const persistedAuthReducer = persistReducer<AuthState>(persistConfig, authReducer)
 
+// Konfigurerer og oppretter Redux store
 export const store = configureStore({
   reducer: {
     auth: persistedAuthReducer,
     users: usersReducer,
     cv: cvReducer
   },
+  // Konfigurerer middleware for å håndtere Redux Persist actions
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -42,5 +48,8 @@ export const store = configureStore({
     })
 })
 
+// Oppretter persistor for Redux Persist
 export const persistor = persistStore(store)
+// Eksporterer dispatch type for typesikkerhet
 export type AppDispatch = typeof store.dispatch
+

@@ -1,19 +1,25 @@
+// Importerer CV type for typesikkerhet
 import type { CV } from '../../store/slices/cvSlice'
 
+// Interface som definerer props for skjemaet
+// Håndterer både data og callback-funksjoner for seksjonshåndtering
 interface CVSelectionFormProps {
   cv: CV | undefined
+  // Holder oversikt over hvilke seksjoner som er valgt
   selectedSections: {
     skills: string[]
     education: string[]
     experience: string[]
     references: string[]
   }
+  // Callback-funksjoner for å oppdatere valgte seksjoner
   onSectionChange: {
     skills: (skills: string[]) => void
     education: (institutions: string[]) => void
     experience: (titles: string[]) => void
     references: (names: string[]) => void
   }
+  // Søkefunksjonalitet for ferdigheter
   searchSkill: string
   onSearchSkillChange: (search: string) => void
 }
@@ -25,8 +31,10 @@ export function CVSelectionForm({
   searchSkill,
   onSearchSkillChange
 }: CVSelectionFormProps) {
+  // Returnerer null hvis ingen CV-data er tilgjengelig
   if (!cv) return null
 
+  // Filtrerer ferdigheter basert på søketekst
   const filteredSkills = cv.skills.filter(skill => 
     skill.toLowerCase().startsWith(searchSkill.toLowerCase())
   )

@@ -2,26 +2,24 @@ import { useState, useEffect } from "react";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { validateCVForm } from "../../utils/CVFormValidation";
-import type {
-  CV,
-  Education,
-  Experience,
-  Reference,
-} from "../../store/slices/cvSlice";
+import type { CV, Education, Experience, Reference } from "../../store/slices/cvSlice";
 import type { User } from "../../store/slices/userSlice";
 import type { CVFormErrors } from "../../utils/CVFormValidation";
 
+
+// Definerer props-interface for CV-skjemakomponenten
 interface CVFormProps {
   onSubmit: (cvData: Omit<CV, "_uuid">) => Promise<void>;
   initialData?: Partial<CV>;
   submitLabel?: string;
   currentUser: User | null;
   users?: User[];
-isModal?: boolean;
-formErrors?: CVFormErrors;
-onCancel?: () => void;
+  isModal?: boolean;
+  formErrors?: CVFormErrors;
+  onCancel?: () => void;
 }
 
+// Hovedkomponent for CV-skjemaet
 export function CVForm({
   onSubmit,
   initialData = {},
@@ -31,9 +29,12 @@ export function CVForm({
   isModal = false,
   onCancel
 }: CVFormProps) {
+  // State for å holde styr på valgt bruker-ID (viktig for admin-funksjonalitet)
   const [selectedUserId, setSelectedUserId] = useState<string>(
     currentUser?._uuid || ""
   );
+
+  // Hovedstate for skjemadata med standard verdier
   const [formData, setFormData] = useState({
     personalInfo: {
       name: initialData.personalInfo?.name || currentUser?.name || '',
@@ -45,9 +46,11 @@ export function CVForm({
     experience: initialData.experience || [],
     references: initialData.references || []
   })
-  
 
+  // State for midlertidig lagring av ny ferdighet
   const [newSkill, setNewSkill] = useState("");
+
+  // State for å håndtere valideringsfeil i skjemaet
   const [formErrors, setFormErrors] = useState<CVFormErrors>({
     personalInfo: {
       name: "",
@@ -60,9 +63,11 @@ export function CVForm({
     references: [],
   });
 
+  // Effect hook som oppdaterer skjemadata basert på brukervalg
   useEffect(() => {
     if (!initialData.personalInfo) {
       if (currentUser?.role === 'user') {
+        // Setter standardverdier for vanlig bruker
         setFormData({
           personalInfo: {
             name: currentUser.name,
@@ -75,6 +80,7 @@ export function CVForm({
           references: []
         })
       } else if (selectedUserId) {
+        // Setter verdier basert på admin-valgt bruker
         const selectedUser = users.find(u => u._uuid === selectedUserId)
         if (selectedUser) {
           setFormData({
@@ -92,25 +98,21 @@ export function CVForm({
       }
     }
   }, [currentUser, selectedUserId, users, initialData.personalInfo])
-  
-  
 
+  // Håndterer innsending av skjemaet
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const validation = validateCVForm(formData);
 
     if (validation.isValid) {
+      // Bestemmer målbruker basert på rolle
       const targetUserId = currentUser?.role === 'admin' ? selectedUserId : currentUser?._uuid;
-      
-      console.log('Selected User ID:', selectedUserId);
-      console.log('Current User:', currentUser);
-      console.log('Target User ID:', targetUserId);
     
-
       if (!targetUserId) {
         return;
       }
 
+      // Oppretter komplett CV-dataobjekt
       const cvData = {
         ...formData,
         userId: targetUserId,
@@ -118,10 +120,10 @@ export function CVForm({
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
-      console.log('CV Data:', cvData);
-      console.log('Creating CV with data:', cvData);
+      //Sender CV-data
       await onSubmit(cvData);
+
+      // Nullstiller skjemaet etter vellykket innsending
       setFormData({
         personalInfo: {
           name: currentUser?.name || '',
@@ -141,10 +143,12 @@ export function CVForm({
         references: []
       })
     } else {
+      // Setter eventuelle valideringsfeil
       setFormErrors(validation.errors);
     }
   };
 
+  // Håndterer tillegg av nye ferdigheter
   const handleAddSkill = () => {
     if (newSkill.trim()) {
       setFormData((prev) => ({
@@ -155,6 +159,7 @@ export function CVForm({
     }
   };
 
+  // Håndterer fjerning av ferdigheter
   const handleRemoveSkill = (index: number) => {
     setFormData((prev) => ({
       ...prev,
@@ -162,6 +167,7 @@ export function CVForm({
     }));
   };
 
+  // Håndterer endringer i utdanningsseksjonen
   const handleEducationChange = (
     index: number,
     field: keyof Education,
@@ -175,6 +181,7 @@ export function CVForm({
     }));
   };
 
+  // Legger til ny tom utdanningsoppføring
   const handleAddEducation = () => {
     setFormData((prev) => ({
       ...prev,
@@ -182,6 +189,7 @@ export function CVForm({
     }));
   };
 
+  // Fjerner en utdanningsoppføring
   const handleRemoveEducation = (index: number) => {
     setFormData((prev: typeof formData) => ({
       ...prev,
@@ -191,6 +199,8 @@ export function CVForm({
     }));
   };
 
+
+  // Håndterer endringer i erfaringsseksjonen
   const handleExperienceChange = (
     index: number,
     field: keyof Experience,
@@ -204,6 +214,7 @@ export function CVForm({
     }));
   };
 
+  // Legger til ny tom erfaringsoppføring
   const handleAddExperience = () => {
     setFormData((prev) => ({
       ...prev,
@@ -220,6 +231,7 @@ export function CVForm({
     }));
   };
 
+  // Fjerner en erfaringsoppføring
   const handleRemoveExperience = (index: number) => {
     setFormData((prev: typeof formData) => ({
       ...prev,
@@ -229,6 +241,7 @@ export function CVForm({
     }));
   };
 
+  // Håndterer endringer i referanseseksjonen
   const handleReferenceChange = (
     index: number,
     field: keyof Reference,
@@ -242,6 +255,7 @@ export function CVForm({
     }));
   };
 
+  // Legger til ny tom referanseoppføring
   const handleAddReference = () => {
     setFormData((prev) => ({
       ...prev,
@@ -249,6 +263,7 @@ export function CVForm({
     }));
   };
 
+  // Fjerner en referanseoppføring
   const handleRemoveReference = (index: number) => {
     setFormData((prev: typeof formData) => ({
       ...prev,
@@ -260,6 +275,7 @@ export function CVForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 bg-gray-100 p-8 rounded-lg">
+      {/* Brukervalg-seksjon (Vises kun for admin) */}
       {currentUser?.role === 'admin' && !isModal && (
         <div className="bg-white p-4 rounded-lg border border-gray-200">
           <label className="block text-sm font-medium text-gray-900">Select User</label>
@@ -278,9 +294,9 @@ export function CVForm({
         </div>
       )}
 
+      {/* Personlig informasjon-seksjon */}
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h3>
-        
         <div className="space-y-2">
           <div>
             <label className="block text-sm font-medium text-gray-500">Name</label>
@@ -288,14 +304,12 @@ export function CVForm({
               {formData.personalInfo.name}
             </p>
           </div>
-          
           <div>
             <label className="block text-sm font-medium text-gray-500">Email</label>
             <p className="mt-1 text-gray-900 font-medium">
               {formData.personalInfo.email}
             </p>
           </div>
-
           <Input
             label="Phone"
             value={formData.personalInfo.phone}
@@ -309,6 +323,7 @@ export function CVForm({
         </div>
       </div>
 
+      {/* Ferdigheter-seksjon */}
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Skills</h3>
         <div className="flex gap-2">
@@ -336,6 +351,7 @@ export function CVForm({
         </div>
       </div>
 
+      {/* Utdanning-seksjon */}
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Education</h3>
         <Button type="button" onClick={handleAddEducation}>Add Education</Button>
@@ -379,6 +395,7 @@ export function CVForm({
         </div>
       </div>
 
+      {/* Arbeidserfaring-seksjon */}
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">Experience</h3>
         <Button type="button" onClick={handleAddExperience}>Add Experience</Button>
@@ -447,6 +464,7 @@ export function CVForm({
         </div>
       </div>
 
+      {/* Referanser-seksjon */}
       <div className="bg-white p-4 rounded-lg border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-900 mb-4">References</h3>
         <Button type="button" onClick={handleAddReference}>Add Reference</Button>
@@ -483,16 +501,18 @@ export function CVForm({
         </div>
       </div>
 
-          <div className="flex justify-end gap-4">
-            <Button type="submit">{submitLabel}</Button>
-            {isModal && onCancel && (
-              <Button variant="danger" onClick={onCancel} type="button">
-                Cancel
-              </Button>
-            )}
-          </div>
+      {/* Handlingsknapper */}
+      <div className="flex justify-end gap-4">
+        <Button type="submit">{submitLabel}</Button>
+        {isModal && onCancel && (
+          <Button variant="danger" onClick={onCancel} type="button">
+            Cancel
+          </Button>
+        )}
+      </div>
     </form>
-)
+  )
+
 
 
 }
